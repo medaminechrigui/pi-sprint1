@@ -16,7 +16,8 @@ export function AuthProvider({ children }) {
     if (storedToken && userData) {
       try {
         setToken(storedToken);
-        setCurrentUser(JSON.parse(userData));
+      const parsedUser = JSON.parse(userData);
+      setCurrentUser(parsedUser);
       } catch (err) {
         console.error('Error parsing stored user data:', err);
       }
@@ -50,7 +51,10 @@ export function AuthProvider({ children }) {
       localStorage.setItem('user', JSON.stringify(data.user));
       
       setToken(data.token);
-      setCurrentUser(data.user);
+      setCurrentUser({
+        ...data.user,
+        _id: data.user._id
+      });
       return data;
     } catch (err) {
       setError(err.message);
