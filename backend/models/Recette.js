@@ -17,6 +17,12 @@ const RecetteSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    favorites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 );

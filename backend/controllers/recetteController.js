@@ -1,3 +1,4 @@
+
 const Recette = require('../models/Recette');
 
 // Create a new recette
@@ -27,10 +28,32 @@ exports.createRecette = async (req, res) => {
 // Get all recettes
 exports.getAllRecettes = async (req, res) => {
   try {
-    const recettes = await Recette.find().populate('userId', 'username');
+    const recettes = await Recette.find().populate('userId', 'username').populate('favorites', '_id');
     res.json(recettes);
   } catch (error) {
     console.error('Error fetching recettes:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+};
+
+// Get a single recette by id
+exports.getRecetteById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const recette = await Recette.findById(id).populate('userId', 'username');
+    if (!recette) {
+      return res.status(404).json({ message: 'Recette not found.' });
+    }
+
+    if (recette.userId._id.toString() !== userId) {
+      return res.status(403).json({ message: 'Unauthorized to view this recette.' });
+    }
+
+    res.json(recette);
+  } catch (error) {
+    console.error('Error fetching recette:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 };
@@ -68,16 +91,22 @@ exports.deleteRecette = async (req, res) => {
     const { id } = req.params;
     const userId = req.userId;
 
+    console.log('Delete recette request by userId:', userId, 'for recette id:', id);
+
     const recette = await Recette.findById(id);
     if (!recette) {
+      console.log('Recette not found for id:', id);
       return res.status(404).json({ message: 'Recette not found.' });
     }
 
+    console.log('Recette userId:', recette.userId.toString());
+
     if (recette.userId.toString() !== userId) {
+      console.log('Unauthorized delete attempt by userId:', userId);
       return res.status(403).json({ message: 'Unauthorized to delete this recette.' });
     }
 
-    await recette.remove();
+    await Recette.findByIdAndDelete(id);
     res.json({ message: 'Recette deleted successfully.' });
   } catch (error) {
     console.error('Error deleting recette:', error);

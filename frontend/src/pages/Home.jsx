@@ -76,18 +76,24 @@ export default function Home() {
               <p className="mb-2">{recette.description}</p>
               <p className="text-sm text-gray-600">By: {recette.userId?.username || 'Unknown'}</p>
               {currentUser && recette.userId?._id === currentUser._id && (
-                <div className="mt-2 space-x-2">
+                <div className="mt-2 flex space-x-4 items-center">
                   <button
                     onClick={() => navigate(`/recette/edit/${recette._id}`)}
-                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 hover:shadow-md transition-shadow duration-200 flex items-center justify-center"
+                    aria-label="Edit recette"
                   >
-                    Edit
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10a2 2 0 002 2h10m-6-14l6 6m-6-6v6h6" />
+                    </svg>
                   </button>
                   <button
                     onClick={() => handleDelete(recette._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 flex items-center justify-center"
+                    aria-label="Delete recette"
                   >
-                    Delete
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4m-4 0a1 1 0 00-1 1v1h6V4a1 1 0 00-1-1m-4 0h4" />
+                    </svg>
                   </button>
                 </div>
               )}
